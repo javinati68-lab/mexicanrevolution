@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mr. Rocha’s English Class: Mexican Revolution</title>
+  <!-- Easy-to-read Google Font: Lexend & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for colorful analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- SortableJS for smooth touch + mouse drag-and-drop -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Lexend', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --blue-glow: 0 0 0 2px #3b82f6, 0 0 14px rgba(59, 130, 246, 0.55);
+      --blue-glow-focus: 0 0 0 3px #2563eb, 0 0 20px rgba(37, 99, 235, 0.8);
+    }
+
+    body {
+      font-family: 'Lexend', 'Plus Jakarta Sans', sans-serif;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Shiny Blue Border around answer boxes, name, date */
+    .shiny-blue-box {
+      border: 2px solid #38bdf8 !important;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.45), inset 0 0 4px rgba(56, 189, 248, 0.15);
+      transition: all 0.2s ease;
+    }
+    .shiny-blue-box:focus,
+    .shiny-blue-box:focus-within {
+      outline: none !important;
+      border-color: #0284c7 !important;
+      box-shadow: 0 0 16px rgba(14, 165, 233, 0.85), 0 0 0 3px rgba(56, 189, 248, 0.35);
+    }
+    .dark .shiny-blue-box {
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.55), inset 0 0 5px rgba(56, 189, 248, 0.2);
+    }
+    .dark .shiny-blue-box:focus,
+    .dark .shiny-blue-box:focus-within {
+      border-color: #7dd3fc !important;
+      box-shadow: 0 0 20px rgba(125, 211, 252, 0.9), 0 0 0 3px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Custom Dropdown Calendar */
+    .calendar-popup {
+      animation: fadeSlideDown 0.18s ease-out;
+    }
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Locked State */
+    .locked-input {
+      opacity: 0.92;
+      cursor: not-allowed !important;
+    }
+
+    /* Puzzle Grid Styling */
+    .puzzle-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 3px;
+      background-color: #1e293b;
+      padding: 4px;
+      border-radius: 0.75rem;
+      touch-action: none;
+    }
+    .puzzle-tile {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      cursor: grab;
+      border-radius: 4px;
+      overflow: hidden;
+      background-repeat: no-repeat;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+    }
+    .puzzle-tile:active {
+      cursor: grabbing;
+      transform: scale(1.04);
+      z-index: 20;
+    }
+    .puzzle-tile.selected-tile {
+      outline: 3px solid #facc15;
+      transform: scale(1.05);
+      z-index: 15;
+    }
+
+    /* Word Tiles for Activity 7 */
+    .word-chip {
+      cursor: grab;
+      user-select: none;
+      touch-action: manipulation;
+      transition: transform 0.12s ease, background-color 0.15s ease;
+    }
+    .word-chip:active {
+      cursor: grabbing;
+      transform: scale(1.05);
+    }
+
+    /* Media fallback styling if local file hasn't been placed yet */
+    .media-container img,
+    .media-container video {
+      width: 100%;
+      height: auto;
+      max-height: 75vh;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Print Styles */
+    @media print {
+      @page {
+        margin: 0.5in;
+        size: auto;
+      }
+      html, body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #app-shell {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+      }
+      #results-section {
+        display: block !important;
+        position: static !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+      .section-panel:not(#results-section) {
+        display: none !important;
+      }
+      .print-card {
+        break-inside: avoid;
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+      canvas {
+        max-width: 100% !important;
+        max-height: 260px !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col">
+
+  <!-- Top Sticky Navigation & Progress Header -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
+    <div class="max-w-6xl mx-auto px-4 py-3">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 via-white to-red-600 p-0.5 shadow-md flex items-center justify-center">
+            <div class="w-full h-full bg-slate-900 dark:bg-slate-950 rounded-[10px] flex items-center justify-center text-white font-bold text-lg">
+              MR
+            </div>
+          </div>
+          <div>
+            <h1 class="text-base sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
+              Mr. Rocha’s English Class: Mexican Revolution
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Interactive History &amp; Grammar Worksheet</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Quick Section Pills (Desktop) -->
+          <div class="hidden lg:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+            <button onclick="goToSection(0)" class="nav-pill px-2.5 py-1 rounded-lg text-xs font-semibold transition" data-nav="0">Intro</button>
+            <button onclick="goToSection(1)" class="nav-pill px-2.5 py-1 rounded-lg text-xs font-semibold transition" data-nav="1">Act 1</button>
+            <button onclick="goToSection(2)" class="nav-pill px-2.5 py-1 rounded-lg text-xs font-semibold transition" data-nav="2">Act 2</button>
+            <button onclick="goToSection(3)" class="nav-pill px-2.5 py-1 rounded-lg text-xs font-semibold transition" data-nav="3">Act 3</button>
+            <button onclick="goToSection(4)" class="nav-pill px-2.5 py-1 rounded-lg text-xs font-semibold transition" data-nav="4">Act 4</button>
+            <button onclick="goToSection(5)" class="nav-pill px-2.5 py-1 rounded-lg text-xs font-semibold transition" data-nav="5">Act 5</button>
+            <button onclick="goToSection(6)" class="nav-pill px-2.5 py-1 rounded-lg text-xs font-semibold transition" data-nav="6">Act 6</button>
+            <button onclick="goToSection(7)" class="nav-pill px-2.5 py-1 rounded-lg text-xs font-semibold transition" data-nav="7">Act 7</button>
+            <button onclick="submitWorksheet()" class="nav-pill px-2.5 py-1 rounded-lg text-xs font-semibold transition" data-nav="8">Results</button>
+          </div>
+
+          <!-- Dark / Light Mode Toggle -->
+          <button id="theme-toggle" type="button" aria-label="Toggle Dark and Light Mode"
+            class="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 text-xs sm:text-sm font-semibold transition shadow-sm">
+            <i data-lucide="moon" class="w-4 h-4 block dark:hidden text-indigo-600"></i>
+            <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-amber-400"></i>
+            <span class="hidden sm:inline dark:hidden">Dark Mode</span>
+            <span class="hidden sm:dark:inline">Light Mode</span>
+          </button>
+
+          <!-- Always-accessible Submit / View Results Button -->
+          <button type="button" onclick="submitWorksheet()"
+            class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-bold shadow-md transition">
+            <i data-lucide="award" class="w-4 h-4"></i>
+            <span>Submit</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="mt-3">
+        <div class="flex justify-between items-center text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
+          <span id="progress-label">Progress: 0% Completed (0 of 7 Activities Checked)</span>
+          <span id="section-indicator" class="text-blue-600 dark:text-sky-400">Introduction</span>
+        </div>
+        <div class="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden p-0.5">
+          <div id="progress-bar-fill" class="h-full rounded-full bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-600 transition-all duration-500" style="width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Shell -->
+  <main id="app-shell" class="flex-1 max-w-5xl w-full mx-auto px-4 py-6 sm:py-8">
+
+    <!-- ==================== SECTION 0: INTRODUCTION ==================== -->
+    <section id="section-0" class="section-panel space-y-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 text-xs font-bold uppercase tracking-wider mb-3">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Welcome Students
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          Mr. Rocha’s English Class: Mexican Revolution
+        </h2>
+        <p class="text-slate-600 dark:text-slate-300 text-base leading-relaxed mb-6">
+          Complete your student details below, explore the historical media, practice the <strong>Simple Past</strong> and <strong>Past Continuous</strong> tenses, and check your answers in each section. You can submit at any time to view your detailed report!
+        </p>
+
+        <!-- Student Name & Dropdown Calendar -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <!-- Name Input -->
+          <div>
+            <label for="student-name" class="block text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">
+              Student Full Name <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <input id="student-name" type="text" placeholder="Type your full name here..."
+                class="shiny-blue-box w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-base font-medium" />
+            </div>
+          </div>
+
+          <!-- Custom Interactive Dropdown Calendar -->
+          <div class="relative" id="calendar-wrapper">
+            <label for="student-date-display" class="block text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">
+              Select Date <span class="text-red-500">*</span>
+            </label>
+            <button type="button" id="student-date-display" onclick="toggleCalendar()"
+              class="shiny-blue-box w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-950 text-left flex items-center justify-between text-base font-medium text-slate-900 dark:text-white">
+              <span id="selected-date-text" class="text-slate-400 dark:text-slate-500">Click to open dropdown calendar...</span>
+              <i data-lucide="calendar" class="w-5 h-5 text-sky-500"></i>
+            </button>
+            <input type="hidden" id="student-date-value" value="" />
+
+            <!-- Dropdown Calendar Popup -->
+            <div id="calendar-dropdown" class="hidden calendar-popup absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 border-2 border-sky-400 rounded-2xl shadow-2xl p-4 z-50">
+              <div class="flex items-center justify-between mb-3">
+                <button type="button" onclick="changeCalMonth(-1)" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200">
+                  <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                </button>
+                <div class="flex items-center gap-1.5">
+                  <select id="cal-month-select" onchange="jumpCalDate()" class="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold rounded-lg px-2 py-1 border border-slate-300 dark:border-slate-700"></select>
+                  <select id="cal-year-select" onchange="jumpCalDate()" class="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold rounded-lg px-2 py-1 border border-slate-300 dark:border-slate-700"></select>
+                </div>
+                <button type="button" onclick="changeCalMonth(1)" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200">
+                  <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                </button>
+              </div>
+              <div class="grid grid-cols-7 text-center text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">
+                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+              </div>
+              <div id="cal-days-grid" class="grid grid-cols-7 gap-1 text-center text-sm"></div>
+              <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
+                <button type="button" onclick="selectToday()" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline">Select Today</button>
+                <button type="button" onclick="closeCalendar()" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image1 (Only shown in Introduction) -->
+        <div class="mt-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+              <i data-lucide="image" class="w-4 h-4 text-sky-500"></i> Historical Cover Illustration (Image1)
+            </span>
+          </div>
+          <div class="media-container w-full rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 p-2">
+            <img id="img1-el" src="Image1.jpg" alt="Mexican Revolution Introduction Illustration"
+              onerror="handleImageFallback(this, 'Image1')"
+              class="w-full h-auto max-h-[520px] object-contain rounded-xl mx-auto" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Footer -->
+      <div class="flex justify-end">
+        <button type="button" onclick="goToSection(1)"
+          class="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-lg transition">
+          <span>Start Activity 1</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 1: ACTIVITY 1 (VIDEO) ==================== -->
+    <section id="section-1" class="section-panel hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase">Activity 1 of 7</span>
+          <span id="status-act1" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Not Checked Yet</span>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Watch the Video &amp; Tell Mr. Rocha About It</h2>
+        <p class="text-slate-600 dark:text-slate-300 mb-5">
+          Watch <strong>Video1</strong> carefully. Then write a clear summary (at least 3–4 complete sentences) telling Mr. Rocha what happened in the video using Simple Past and Past Continuous verbs.
+        </p>
+
+        <!-- Full-width Video1 Container -->
+        <div class="w-full rounded-2xl overflow-hidden border-2 border-slate-300 dark:border-slate-700 bg-black mb-6 shadow-md">
+          <video id="video1-el" controls playsinline preload="metadata" class="w-full h-auto max-h-[70vh] block mx-auto"
+            onerror="handleVideoFallback(this)">
+            <source src="Video1.mp4" type="video/mp4" />
+            <source src="Video1.webm" type="video/webm" />
+            Your browser does not support the video tag.
+          </video>
+          <div id="video1-fallback" class="hidden p-8 text-center text-slate-200 bg-slate-900">
+            <i data-lucide="film" class="w-12 h-12 mx-auto mb-2 text-sky-400"></i>
+            <p class="font-bold text-lg">Video1 Ready</p>
+            <p class="text-sm text-slate-400 mt-1">Place <code>Video1.mp4</code> in the same folder as this HTML file to play automatically.</p>
+          </div>
+        </div>
+
+        <!-- Writing Box -->
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <label for="act1-response" class="font-bold text-sm text-slate-800 dark:text-slate-200">
+              Your Summary for Mr. Rocha:
+            </label>
+            <span id="act1-wordcount" class="text-xs font-semibold text-slate-500 dark:text-slate-400">0 words</span>
+          </div>
+          <textarea id="act1-response" rows="5" oninput="updateWordCount('act1-response', 'act1-wordcount')"
+            placeholder="Dear Mr. Rocha, in the video I watched..."
+            class="shiny-blue-box w-full p-4 rounded-xl bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-base leading-relaxed"></textarea>
+        </div>
+
+        <!-- Check Button & Feedback -->
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <button id="check-btn-1" type="button" onclick="checkActivity1()"
+            class="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md transition">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            <span>Check Activity 1</span>
+          </button>
+        </div>
+        <div id="feedback-act1" class="hidden mt-4 p-4 rounded-xl border"></div>
+      </div>
+
+      <!-- Prev / Next Navigation -->
+      <div class="flex justify-between items-center gap-4">
+        <button type="button" onclick="goToSection(0)"
+          class="flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold transition">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          <span>Previous: Introduction</span>
+        </button>
+        <button type="button" onclick="goToSection(2)"
+          class="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md transition">
+          <span>Next: Activity 2</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 2: ACTIVITY 2 (STORY & IMAGE 2) ==================== -->
+    <section id="section-2" class="section-panel hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase">Activity 2 of 7</span>
+          <span id="status-act2" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Not Checked Yet</span>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Read the Story &amp; Tell Mr. Rocha What It Is About</h2>
+        <p class="text-slate-600 dark:text-slate-300 mb-5">
+          Examine <strong>Image2</strong> and read the historical story below carefully. Then explain to Mr. Rocha what the story is about in your own words.
+        </p>
+
+        <!-- Full-width Image2 -->
+        <div class="media-container w-full rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 p-2 mb-6">
+          <img id="img2-el" src="Image2.jpg" alt="Story Illustration Image2"
+            onerror="handleImageFallback(this, 'Image2')"
+            class="w-full h-auto max-h-[560px] object-contain rounded-xl mx-auto" />
+        </div>
+
+        <!-- Narrative Story Text -->
+        <article class="p-5 sm:p-6 rounded-2xl bg-amber-50/80 dark:bg-slate-800/80 border border-amber-200 dark:border-slate-700 mb-6 space-y-3 text-slate-800 dark:text-slate-100 leading-relaxed text-base">
+          <h3 class="text-lg font-bold text-amber-900 dark:text-amber-300 flex items-center gap-2">
+            <i data-lucide="book-open" class="w-5 h-5"></i> Midnight Train to Chihuahua (1913)
+          </h3>
+          <p>
+            In November 1913, a cold wind was blowing across the northern desert of Mexico while hundreds of revolutionary soldiers were waiting beside the railway tracks. Young Elena Morales was carrying medical supplies and warm blankets for the wounded troops. Her older brother, Mateo, was inspecting the steam locomotive with General Villa’s scouts when a distant telegraph signal flashed in the dark.
+          </p>
+          <p>
+            Suddenly, the engine whistled, and the soldiers climbed onto the wooden boxcars. While the train was speeding toward Ciudad Juárez under the stars, Elena wrote letters for soldiers who could not read or write, and Mateo guarded the supplies. By sunrise, they reached the camp safely, proving that ordinary citizens and brave <em>soldaderas</em> kept the Revolution moving forward every single day.
+          </p>
+        </article>
+
+        <!-- Student Summary Input -->
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <label for="act2-response" class="font-bold text-sm text-slate-800 dark:text-slate-200">
+              Tell Mr. Rocha what this story is about:
+            </label>
+            <span id="act2-wordcount" class="text-xs font-semibold text-slate-500 dark:text-slate-400">0 words</span>
+          </div>
+          <textarea id="act2-response" rows="5" oninput="updateWordCount('act2-response', 'act2-wordcount')"
+            placeholder="Dear Mr. Rocha, this story is about..."
+            class="shiny-blue-box w-full p-4 rounded-xl bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-base leading-relaxed"></textarea>
+        </div>
+
+        <div class="mt-6">
+          <button id="check-btn-2" type="button" onclick="checkActivity2()"
+            class="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md transition">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            <span>Check Activity 2</span>
+          </button>
+        </div>
+        <div id="feedback-act2" class="hidden mt-4 p-4 rounded-xl border"></div>
+      </div>
+
+      <!-- Prev / Next Navigation -->
+      <div class="flex justify-between items-center gap-4">
+        <button type="button" onclick="goToSection(1)"
+          class="flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold transition">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          <span>Previous: Activity 1</span>
+        </button>
+        <button type="button" onclick="goToSection(3)"
+          class="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md transition">
+          <span>Next: Activity 3</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 3: ACTIVITY 3 (GRAMMAR GUIDE + PRACTICE) ==================== -->
+    <section id="section-3" class="section-panel hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase">Activity 3 of 7</span>
+          <span id="status-act3" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Not Checked Yet</span>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Grammar Mastery: Simple Past &amp; Past Continuous</h2>
+        <p class="text-slate-600 dark:text-slate-300 mb-6">
+          Study the complete grammar explanation and examples below, then complete all 12 practice items.
+        </p>
+
+        <!-- Complete Grammar Guide -->
+        <div class="space-y-4 mb-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Simple Past Card -->
+            <div class="p-5 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800">
+              <h3 class="font-bold text-lg text-sky-900 dark:text-sky-300 mb-2">1. Simple Past Tense</h3>
+              <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
+                Used for <strong>completed actions</strong> at a specific time in the past, or short actions that interrupt an ongoing event.
+              </p>
+              <ul class="text-sm space-y-2 text-slate-800 dark:text-slate-200">
+                <li><span class="font-bold text-emerald-600 dark:text-emerald-400">Affirmative (+):</span> Subject + Verb(-ed / irregular).<br/><em>"Madero <strong>wrote</strong> the Plan of San Luis in 1910."</em></li>
+                <li><span class="font-bold text-rose-600 dark:text-rose-400">Negative (-):</span> Subject + <strong>did not (didn't)</strong> + base verb.<br/><em>"Porfirio Díaz <strong>did not listen</strong> to the farmers."</em></li>
+                <li><span class="font-bold text-indigo-600 dark:text-indigo-400">Interrogative (?):</span> <strong>Did</strong> + subject + base verb?<br/><em>"<strong>Did</strong> Villa <strong>capture</strong> Torreón in 1913?"</em></li>
+              </ul>
+            </div>
+
+            <!-- Past Continuous Card -->
+            <div class="p-5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800">
+              <h3 class="font-bold text-lg text-purple-900 dark:text-purple-300 mb-2">2. Past Continuous Tense</h3>
+              <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
+                Used for <strong>actions in progress</strong> at a particular moment in the past, or background scenes interrupted by a Simple Past event.
+              </p>
+              <ul class="text-sm space-y-2 text-slate-800 dark:text-slate-200">
+                <li><span class="font-bold text-emerald-600 dark:text-emerald-400">Affirmative (+):</span> Subject + <strong>was / were</strong> + Verb-ing.<br/><em>"Soldiers <strong>were marching</strong> across Morelos."</em></li>
+                <li><span class="font-bold text-rose-600 dark:text-rose-400">Negative (-):</span> Subject + <strong>was / were not</strong> + Verb-ing.<br/><em>"The factories <strong>were not paying</strong> fair wages."</em></li>
+                <li><span class="font-bold text-indigo-600 dark:text-indigo-400">Interrogative (?):</span> <strong>Was / Were</strong> + subject + Verb-ing?<br/><em>"<strong>Were</strong> the delegates <strong>writing</strong> the constitution?"</em></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Commands (Imperatives) Card -->
+          <div class="p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+            <h3 class="font-bold text-lg text-amber-900 dark:text-amber-300 mb-1">3. Commands (Imperatives in Historical &amp; Classroom Contexts)</h3>
+            <p class="text-sm text-slate-700 dark:text-slate-300 mb-2">
+              Commands use the <strong>base form of the verb</strong> (or <strong>Do not / Don't + base verb</strong>) to give direct orders, instructions, or rallying cries.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-800 dark:text-slate-200">
+              <div>• <strong>Affirmative Command:</strong> <em>"<strong>Defend</strong> the land and <strong>protect</strong> the villages!"</em></div>
+              <div>• <strong>Negative Command:</strong> <em>"<strong>Do not abandon</strong> the railway station!"</em></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12 Interactive Grammar Questions -->
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Practice Exercise (12 Items)</h3>
+        <div id="act3-questions" class="space-y-4"></div>
+
+        <div class="mt-6">
+          <button id="check-btn-3" type="button" onclick="checkActivity3()"
+            class="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md transition">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            <span>Check Activity 3</span>
+          </button>
+        </div>
+        <div id="feedback-act3" class="hidden mt-4 p-4 rounded-xl border"></div>
+      </div>
+
+      <!-- Prev / Next Navigation -->
+      <div class="flex justify-between items-center gap-4">
+        <button type="button" onclick="goToSection(2)"
+          class="flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold transition">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          <span>Previous: Activity 2</span>
+        </button>
+        <button type="button" onclick="goToSection(4)"
+          class="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md transition">
+          <span>Next: Activity 4</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 4: ACTIVITY 4 (LISTEN & WRITE - 8 AUDIOS) ==================== -->
+    <section id="section-4" class="section-panel hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase">Activity 4 of 7</span>
+          <span id="status-act4" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Not Checked Yet</span>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Listen and Write (Dictation)</h2>
+        <p class="text-slate-600 dark:text-slate-300 mb-6">
+          Listen carefully to each audio recording (<strong>Audio1</strong> through <strong>Audio8</strong>) and type the exact sentence you hear, including capital letters and end punctuation.
+        </p>
+
+        <div id="act4-items" class="space-y-5"></div>
+
+        <div class="mt-6">
+          <button id="check-btn-4" type="button" onclick="checkActivity4()"
+            class="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md transition">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            <span>Check Activity 4</span>
+          </button>
+        </div>
+        <div id="feedback-act4" class="hidden mt-4 p-4 rounded-xl border"></div>
+      </div>
+
+      <!-- Prev / Next Navigation -->
+      <div class="flex justify-between items-center gap-4">
+        <button type="button" onclick="goToSection(3)"
+          class="flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold transition">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          <span>Previous: Activity 3</span>
+        </button>
+        <button type="button" onclick="goToSection(5)"
+          class="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md transition">
+          <span>Next: Activity 5</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 5: ACTIVITY 5 (24-PIECE PUZZLE) ==================== -->
+    <section id="section-5" class="section-panel hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase">Activity 5 of 7</span>
+          <span id="status-act5" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Not Checked Yet</span>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Historical Image Puzzle (24 Squares)</h2>
+        <p class="text-slate-600 dark:text-slate-300 mb-4">
+          Drag and drop (or tap two squares to swap) the 24 shuffled pieces of <strong>Image3</strong> on the puzzle board until it matches the target image!
+        </p>
+
+        <!-- Puzzle Controls & Timer -->
+        <div class="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 mb-6">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white">
+              <i data-lucide="timer" class="w-5 h-5 text-sky-500"></i>
+              <span>Time: <span id="puzzle-timer" class="font-mono text-sky-600 dark:text-sky-400">00:00</span></span>
+            </div>
+            <div class="text-sm font-semibold text-slate-600 dark:text-slate-300">
+              Correct Pieces: <span id="puzzle-correct-count" class="font-bold text-emerald-600 dark:text-emerald-400">0</span> / 24
+            </div>
+          </div>
+          <button id="puzzle-reset-btn" type="button" onclick="resetPuzzle()"
+            class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow transition">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            <span>Do Again</span>
+          </button>
+        </div>
+
+        <!-- Puzzle Workspace: Board + Target Image3 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          <!-- Main 24-Square Canvas (2 cols wide on desktop) -->
+          <div class="lg:col-span-2">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
+              Puzzle Canvas (Drag &amp; Drop Squares to Solve)
+            </h3>
+            <div id="puzzle-board" class="puzzle-grid w-full shadow-xl border-2 border-sky-400"></div>
+          </div>
+
+          <!-- Target Image3 Reference -->
+          <div>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">
+              Target Image (Image3)
+            </h3>
+            <div class="rounded-xl overflow-hidden border-2 border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-950 p-2 shadow">
+              <img id="target-img3" src="Image3.jpg" alt="Target Image3 Reference"
+                class="w-full h-auto rounded-lg object-contain" />
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+              Tip: Drag any tile onto another tile to swap their positions, or click/tap one tile and then another.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <button id="check-btn-5" type="button" onclick="checkActivity5()"
+            class="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md transition">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            <span>Check Activity 5</span>
+          </button>
+        </div>
+        <div id="feedback-act5" class="hidden mt-4 p-4 rounded-xl border"></div>
+      </div>
+
+      <!-- Prev / Next Navigation -->
+      <div class="flex justify-between items-center gap-4">
+        <button type="button" onclick="goToSection(4)"
+          class="flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold transition">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          <span>Previous: Activity 4</span>
+        </button>
+        <button type="button" onclick="goToSection(6)"
+          class="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md transition">
+          <span>Next: Activity 6</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 6: ACTIVITY 6 (LISTEN, READ & MULTIPLE CHOICE) ==================== -->
+    <section id="section-6" class="section-panel hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase">Activity 6 of 7</span>
+          <span id="status-act6" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Not Checked Yet</span>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Listen and Read: The Mexican Revolution</h2>
+        <p class="text-slate-600 dark:text-slate-300 mb-5">
+          Play <strong>Audio9</strong> while reading the passage below, then select the correct answer for each of the 6 comprehension questions.
+        </p>
+
+        <!-- Audio9 Player -->
+        <div class="p-4 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 mb-6">
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+            <span class="text-sm font-bold text-sky-900 dark:text-sky-300 flex items-center gap-2">
+              <i data-lucide="headphones" class="w-5 h-5"></i> Audio9: The Mexican Revolution Narration
+            </span>
+          </div>
+          <audio id="audio9-el" controls class="w-full">
+            <source src="Audio9.mp3" type="audio/mpeg" />
+            <source src="Audio9.wav" type="audio/wav" />
+            <source src="Audio9.ogg" type="audio/ogg" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+
+        <!-- Exact Reading Text -->
+        <article class="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 mb-8 space-y-4 text-slate-800 dark:text-slate-100 leading-relaxed text-base">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">The Mexican Revolution</h3>
+          <p>
+            The Mexican Revolution began in 1910. At that time, Porfirio Díaz was the president of Mexico. He governed the country for more than thirty years. Some people were rich, but many people were poor. Farmers worked very hard on large farms, and they did not have their own land. Workers in factories earned little money, and they worked long hours. Many families wanted a better life, but the government did not listen to them. This made people angry.
+          </p>
+          <p>
+            Francisco Madero wanted a change. He said that Mexico needed free elections, and he asked the people to fight against Díaz. In November 1910, many Mexicans took up arms. Díaz left the country in 1911, and Madero became president.
+          </p>
+          <p>
+            Other leaders also became important. Emiliano Zapata fought in the south of Mexico. He wanted land for the farmers, and his famous words were “Land and Liberty.” Pancho Villa fought in the north. He and his soldiers traveled by train and won many battles. Venustiano Carranza was another leader, and he later became president.
+          </p>
+          <p>
+            The war was long and difficult. Many people lost their homes, and about one million people died. Women also played an important role. Some women cooked for the soldiers, some took care of the wounded, and some even fought in battles. They were called “soldaderas.” Life was very hard for everyone in those years.
+          </p>
+          <p>
+            In 1917, Mexico wrote a new constitution. This important law gave workers more rights and protected the land of the farmers. It also said that children could go to school for free. The fighting slowly ended in the 1920s.
+          </p>
+          <p>
+            Today, Mexicans remember the Revolution every year on November 20. People watch parades, and schools tell the stories of the heroes. The Revolution changed Mexico, and it is still an important part of the country’s history.
+          </p>
+        </article>
+
+        <!-- 6 Multiple-Choice Questions -->
+        <div id="act6-questions" class="space-y-5"></div>
+
+        <div class="mt-6">
+          <button id="check-btn-6" type="button" onclick="checkActivity6()"
+            class="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md transition">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            <span>Check Activity 6</span>
+          </button>
+        </div>
+        <div id="feedback-act6" class="hidden mt-4 p-4 rounded-xl border"></div>
+      </div>
+
+      <!-- Prev / Next Navigation -->
+      <div class="flex justify-between items-center gap-4">
+        <button type="button" onclick="goToSection(5)"
+          class="flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold transition">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          <span>Previous: Activity 5</span>
+        </button>
+        <button type="button" onclick="goToSection(7)"
+          class="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md transition">
+          <span>Next: Activity 7</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 7: ACTIVITY 7 (SENTENCE UNSCRAMBLE + AUDIO) ==================== -->
+    <section id="section-7" class="section-panel hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase">Activity 7 of 7</span>
+          <span id="status-act7" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Not Checked Yet</span>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Sentence Builder: Drag &amp; Drop Complex Sentences</h2>
+        <p class="text-slate-600 dark:text-slate-300 mb-6">
+          Drag and drop (or click/tap) the shuffled words into the answer box to build 10 complex sentences using <strong>Simple Past</strong> and <strong>Past Continuous</strong> (affirmative, negative, and interrogative). Click the <strong>Listen</strong> button on each item to hear the sentence read aloud!
+        </p>
+
+        <div id="act7-items" class="space-y-6"></div>
+
+        <div class="mt-6">
+          <button id="check-btn-7" type="button" onclick="checkActivity7()"
+            class="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md transition">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            <span>Check Activity 7</span>
+          </button>
+        </div>
+        <div id="feedback-act7" class="hidden mt-4 p-4 rounded-xl border"></div>
+      </div>
+
+      <!-- Prev / Submit Navigation -->
+      <div class="flex flex-wrap justify-between items-center gap-4">
+        <button type="button" onclick="goToSection(6)"
+          class="flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold transition">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          <span>Previous: Activity 6</span>
+        </button>
+        <button type="button" onclick="submitWorksheet()"
+          class="flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-bold text-base shadow-xl transition">
+          <i data-lucide="award" class="w-5 h-5"></i>
+          <span>Submit &amp; View Full Results</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 8: RESULTS DASHBOARD ==================== -->
+    <section id="results-section" class="section-panel hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 print-card">
+        <!-- Header + Print Button -->
+        <div class="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6 mb-6">
+          <div>
+            <span class="inline-block px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-xs font-bold uppercase mb-2">
+              Official Performance Report
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+              Mr. Rocha’s English Class: Mexican Revolution
+            </h2>
+            <div class="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm text-slate-600 dark:text-slate-300">
+              <span><strong>Student:</strong> <span id="report-student-name">Student</span></span>
+              <span><strong>Date:</strong> <span id="report-student-date">Not Selected</span></span>
+            </div>
+          </div>
+
+          <button type="button" onclick="printResults()"
+            class="no-print flex items-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg transition">
+            <i data-lucide="printer" class="w-5 h-5"></i>
+            <span>Print Results</span>
+          </button>
+        </div>
+
+        <!-- Overall Score Banner -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+          <div class="p-6 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white shadow-lg flex flex-col justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider opacity-85">Overall Score</span>
+            <div class="my-2">
+              <span id="overall-percentage" class="text-5xl font-extrabold">0%</span>
+            </div>
+            <span id="overall-points-label" class="text-sm font-medium opacity-90">0 / 100 Points Earned</span>
+          </div>
+
+          <div class="md:col-span-2 p-6 rounded-2xl bg-gradient-to-r from-amber-50 via-emerald-50 to-sky-50 dark:from-slate-800 dark:via-slate-800 dark:to-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col justify-center">
+            <h3 id="overall-grade-title" class="text-xl font-bold text-slate-900 dark:text-white mb-2">
+              Performance Summary
+            </h3>
+            <p id="overall-feedback-text" class="text-slate-700 dark:text-slate-200 text-base leading-relaxed">
+              Submit your work to view personalized feedback.
+            </p>
+          </div>
+        </div>
+
+        <!-- Colorful Activity Progress Bars -->
+        <div class="mb-8 print-card">
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+            <i data-lucide="bar-chart-3" class="w-5 h-5 text-sky-500"></i> Activity-by-Activity Score Breakdown
+          </h3>
+          <div id="activity-bars-container" class="space-y-4"></div>
+        </div>
+
+        <!-- Colorful Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 print-card">
+            <h4 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-3 text-center">
+              Activity Scores Comparison (Bar Graph)
+            </h4>
+            <div class="relative h-64">
+              <canvas id="barChartCanvas"></canvas>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 print-card">
+            <h4 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-3 text-center">
+              Skill Mastery Distribution (Doughnut Chart)
+            </h4>
+            <div class="relative h-64">
+              <canvas id="doughnutChartCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8 Specific Personalized Recommendations -->
+        <div class="print-card">
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+            <i data-lucide="lightbulb" class="w-5 h-5 text-amber-500"></i> 8 Personalized Study Recommendations from Mr. Rocha
+          </h3>
+          <div id="recommendations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+      </div>
+
+      <!-- Return to Worksheet Button -->
+      <div class="flex justify-between items-center no-print">
+        <button type="button" onclick="goToSection(7)"
+          class="flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold transition">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          <span>Back to Activity 7</span>
+        </button>
+        <button type="button" onclick="goToSection(0)"
+          class="flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition">
+          <i data-lucide="home" class="w-4 h-4"></i>
+          <span>Back to Introduction</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. GLOBAL STATE & DATA DEFINITIONS
+    // =========================================================================
+    const state = {
+      currentSection: 0,
+      checked: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false },
+      scores: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }, // Stored as percentage 0..100
+      details: { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null },
+      puzzleOrder: [],
+      puzzleSeconds: 0,
+      puzzleInterval: null,
+      selectedTileIndex: null,
+      img3ResolvedUrl: 'Image3.jpg',
+      charts: { bar: null, doughnut: null }
+    };
+
+    const sectionTitles = [
+      "Introduction",
+      "Activity 1: Video Summary",
+      "Activity 2: Story Summary",
+      "Activity 3: Grammar Practice",
+      "Activity 4: Audio Dictation",
+      "Activity 5: 24-Square Puzzle",
+      "Activity 6: Reading & Listening",
+      "Activity 7: Sentence Builder",
+      "Results & Analytics"
+    ];
+
+    // Activity 3 Questions (Simple Past, Past Continuous, Affirmative, Negative, Interrogative, Commands)
+    const act3Data = [
+      {
+        id: "q3_1",
+        tag: "Simple Past • Affirmative",
+        prompt: "In November 1910, Francisco Madero __________ (call) on the Mexican people to rise up against Porfirio Díaz.",
+        options: ["called", "was calling", "call", "did call not"],
+        answer: "called"
+      },
+      {
+        id: "q3_2",
+        tag: "Past Continuous • Affirmative",
+        prompt: "While Pancho Villa's troops __________ (travel) north by train, scouts were checking the tracks ahead.",
+        options: ["were traveling", "traveled", "was traveling", "travel"],
+        answer: "were traveling"
+      },
+      {
+        id: "q3_3",
+        tag: "Simple Past • Negative",
+        prompt: "Before 1910, poor farm workers __________ (not / own) the land where they worked every day.",
+        options: ["did not own", "were not owning", "not owned", "did not owned"],
+        answer: "did not own"
+      },
+      {
+        id: "q3_4",
+        tag: "Past Continuous • Negative",
+        prompt: "During the blockade, the factory machines __________ (not / run) because workers joined the strike.",
+        options: ["were not running", "did not ran", "was not running", "not running"],
+        answer: "were not running"
+      },
+      {
+        id: "q3_5",
+        tag: "Simple Past • Interrogative",
+        prompt: "__________ Emiliano Zapata __________ (demand) land and liberty for the farmers of Morelos?",
+        options: ["Did / demand", "Was / demanding", "Did / demanded", "Were / demand"],
+        answer: "Did / demand"
+      },
+      {
+        id: "q3_6",
+        tag: "Past Continuous • Interrogative",
+        prompt: "What __________ the delegates __________ (write) in Querétaro in 1917?",
+        options: ["were / writing", "did / wrote", "was / writing", "did / writing"],
+        answer: "were / writing"
+      },
+      {
+        id: "q3_7",
+        tag: "Interrupted Action • Mixed Tenses",
+        prompt: "The soldaderas __________ (prepare) food at the camp when the telegraph message __________ (arrive).",
+        options: ["were preparing / arrived", "prepared / was arriving", "was preparing / arrived", "prepared / arrived"],
+        answer: "were preparing / arrived"
+      },
+      {
+        id: "q3_8",
+        tag: "Interrupted Action • Mixed Tenses",
+        prompt: "Porfirio Díaz __________ (leave) Mexico in 1911 while citizens __________ (celebrate) in the streets.",
+        options: ["left / were celebrating", "was leaving / celebrated", "left / was celebrating", "leave / were celebrating"],
+        answer: "left / were celebrating"
+      },
+      {
+        id: "q3_9",
+        tag: "Affirmative Command",
+        prompt: "General's Order: '__________ the railway bridge before sunrise so reinforcements can cross!'",
+        options: ["Secure", "Secured", "Securing", "Did secure"],
+        answer: "Secure"
+      },
+      {
+        id: "q3_10",
+        tag: "Negative Command",
+        prompt: "Commander's Warning: '__________ your posts until the signal flare goes up!'",
+        options: ["Do not leave", "Did not leave", "Were not leaving", "Not left"],
+        answer: "Do not leave"
+      },
+      {
+        id: "q3_11",
+        tag: "Simple Past • Interrogative",
+        prompt: "Why __________ thousands of families __________ (support) the Revolution in 1910?",
+        options: ["did / support", "were / support", "did / supported", "was / supporting"],
+        answer: "did / support"
+      },
+      {
+        id: "q3_12",
+        tag: "Past Continuous • Affirmative",
+        prompt: "At midnight, Elena __________ (write) letters by lantern light while the train __________ (move) through the canyon.",
+        options: ["was writing / was moving", "wrote / moved", "were writing / were moving", "was write / moved"],
+        answer: "was writing / was moving"
+      }
+    ];
+
+    // Activity 4 Exact Answer Key & Audio Files
+    const act4Data = [
+      { num: 1, audio: "Audio1", answer: "Francisco Madero published his plan in 1910." },
+      { num: 2, audio: "Audio2", answer: "Zapata’s soldiers were fighting in Morelos when the news arrived." },
+      { num: 3, audio: "Audio3", answer: "Porfirio Díaz did not accept the demands of the people." },
+      { num: 4, audio: "Audio4", answer: "The farmers were not working in the fields during the war." },
+      { num: 5, audio: "Audio5", answer: "Did Pancho Villa capture Ciudad Juárez in 1911?" },
+      { num: 6, audio: "Audio6", answer: "Were the rebels travelling by train when the battle began?" },
+      { num: 7, audio: "Audio7", answer: "Venustiano Carranza did not agree with Villa about the new government." },
+      { num: 8, audio: "Audio8", answer: "What were the delegates writing in Querétaro in 1916?" }
+    ];
+
+    // Activity 6 Multiple-Choice Data (Exact Match to Prompt)
+    const act6Data = [
+      {
+        num: 1,
+        question: "Which sentence best summarizes the text?",
+        options: [
+          { letter: "A", text: "The Revolution was a short war between two friends." },
+          { letter: "B", text: "Difficult conditions led Mexicans to fight for change, and the Revolution changed the country." },
+          { letter: "C", text: "Pancho Villa was the only important leader." },
+          { letter: "D", text: "Mexico wrote a constitution before the war began." }
+        ],
+        correct: "B",
+        explanation: "Difficult conditions led to the Revolution, and it changed Mexico."
+      },
+      {
+        num: 2,
+        question: "Why did many farmers support the Revolution?",
+        options: [
+          { letter: "A", text: "They wanted to travel by train." },
+          { letter: "B", text: "They wanted to work longer hours." },
+          { letter: "C", text: "They wanted to move to the north." },
+          { letter: "D", text: "They did not have their own land and wanted it." }
+        ],
+        correct: "D",
+        explanation: "Farmers did not have their own land."
+      },
+      {
+        num: 3,
+        question: "How were Zapata and Villa different?",
+        options: [
+          { letter: "A", text: "Zapata fought in the south and wanted land for farmers; Villa fought in the north." },
+          { letter: "B", text: "Zapata fought in the north; Villa fought in the south." },
+          { letter: "C", text: "Both were presidents before Díaz." },
+          { letter: "D", text: "Villa wrote the new constitution." }
+        ],
+        correct: "A",
+        explanation: "Zapata fought in the south for land; Villa fought in the north."
+      },
+      {
+        num: 4,
+        question: "What can you infer about the soldaderas?",
+        options: [
+          { letter: "A", text: "Only men could help during the war." },
+          { letter: "B", text: "Women were not important in the war." },
+          { letter: "C", text: "Women did many different jobs during the war." },
+          { letter: "D", text: "Women stopped the war." }
+        ],
+        correct: "C",
+        explanation: "Women cooked, cared for the wounded, and fought."
+      },
+      {
+        num: 5,
+        question: "What was one effect of the 1917 constitution?",
+        options: [
+          { letter: "A", text: "Díaz became president again." },
+          { letter: "B", text: "Workers received more rights." },
+          { letter: "C", text: "The Revolution began." },
+          { letter: "D", text: "Schools closed for children." }
+        ],
+        correct: "B",
+        explanation: "The constitution gave workers more rights."
+      },
+      {
+        num: 6,
+        question: "Which list shows the events in the correct order?",
+        options: [
+          { letter: "A", text: "Constitution, Díaz leaves, war begins" },
+          { letter: "B", text: "Madero becomes president, war begins, Díaz leaves" },
+          { letter: "C", text: "Díaz leaves, constitution, war begins" },
+          { letter: "D", text: "War begins, Díaz leaves, constitution" }
+        ],
+        correct: "D",
+        explanation: "The war began, Díaz left in 1911, and the constitution came in 1917."
+      }
+    ];
+
+    // Activity 7: 10 Complex Sentences (Affirmative, Negative, Interrogative with Simple Past & Past Continuous)
+    const act7Data = [
+      {
+        id: 1,
+        type: "Affirmative",
+        sentence: "While Emiliano Zapata was organizing farmers in Morelos, Francisco Madero called for free elections."
+      },
+      {
+        id: 2,
+        type: "Affirmative",
+        sentence: "The brave soldaderas were caring for wounded soldiers when the supply train finally arrived."
+      },
+      {
+        id: 3,
+        type: "Affirmative",
+        sentence: "Pancho Villa was leading his cavalry across Chihuahua while northern factories were closing down."
+      },
+      {
+        id: 4,
+        type: "Negative",
+        sentence: "Porfirio Díaz did not resign from office until thousands of citizens were marching in protest."
+      },
+      {
+        id: 5,
+        type: "Negative",
+        sentence: "The exhausted farmers were not resting in their villages when the federal army crossed the river."
+      },
+      {
+        id: 6,
+        type: "Negative",
+        sentence: "Venustiano Carranza did not support Villa because their armies were fighting for different plans."
+      },
+      {
+        id: 7,
+        type: "Negative",
+        sentence: "Children were not attending free public schools before the delegates approved the 1917 constitution."
+      },
+      {
+        id: 8,
+        type: "Interrogative",
+        sentence: "What were the delegates debating in Querétaro when they wrote the new labor laws?"
+      },
+      {
+        id: 9,
+        type: "Interrogative",
+        sentence: "Did Pancho Villa capture Ciudad Juárez while federal troops were guarding the southern border?"
+      },
+      {
+        id: 10,
+        type: "Interrogative",
+        sentence: "Where were the revolutionary leaders meeting when the historic treaty ended the fighting?"
+      }
+    ];
+
+    // =========================================================================
+    // 2. THEME TOGGLE (DARK / LIGHT MODE)
+    // =========================================================================
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    themeToggleBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      if (state.currentSection === 8) {
+        renderCharts();
+      }
+    });
+
+    // =========================================================================
+    // 3. DROPDOWN CALENDAR LOGIC
+    // =========================================================================
+    let calCurrentDate = new Date();
+    let calSelectedDate = null;
+
+    function initCalendar() {
+      const monthSelect = document.getElementById('cal-month-select');
+      const yearSelect = document.getElementById('cal-year-select');
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      months.forEach((m, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = m;
+        monthSelect.appendChild(opt);
+      });
+      const currentYear = new Date().getFullYear();
+      for (let y = currentYear - 5; y <= currentYear + 5; y++) {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        yearSelect.appendChild(opt);
+      }
+      renderCalendarDays();
+
+      document.addEventListener('click', (e) => {
+        const wrapper = document.getElementById('calendar-wrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+          closeCalendar();
+        }
+      });
+    }
+
+    function toggleCalendar() {
+      const dropdown = document.getElementById('calendar-dropdown');
+      dropdown.classList.toggle('hidden');
+      renderCalendarDays();
+    }
+
+    function closeCalendar() {
+      document.getElementById('calendar-dropdown').classList.add('hidden');
+    }
+
+    function changeCalMonth(delta) {
+      calCurrentDate.setMonth(calCurrentDate.getMonth() + delta);
+      renderCalendarDays();
+    }
+
+    function jumpCalDate() {
+      const m = parseInt(document.getElementById('cal-month-select').value, 10);
+      const y = parseInt(document.getElementById('cal-year-select').value, 10);
+      calCurrentDate.setMonth(m);
+      calCurrentDate.setFullYear(y);
+      renderCalendarDays();
+    }
+
+    function selectToday() {
+      const today = new Date();
+      calCurrentDate = new Date(today.getFullYear(), today.getMonth(), 1);
+      pickDate(today.getFullYear(), today.getMonth(), today.getDate());
+    }
+
+    function pickDate(year, month, day) {
+      calSelectedDate = new Date(year, month, day);
+      const formatted = calSelectedDate.toLocaleDateString('en-US', {
+        weekday: 'short', year: 'numeric', month: 'long', day: 'numeric'
+      });
+      const displayEl = document.getElementById('selected-date-text');
+      displayEl.textContent = formatted;
+      displayEl.classList.remove('text-slate-400', 'dark:text-slate-500');
+      displayEl.classList.add('text-slate-900', 'dark:text-white', 'font-semibold');
+      document.getElementById('student-date-value').value = formatted;
+      renderCalendarDays();
+      closeCalendar();
+    }
+
+    function renderCalendarDays() {
+      const year = calCurrentDate.getFullYear();
+      const month = calCurrentDate.getMonth();
+      document.getElementById('cal-month-select').value = month;
+      document.getElementById('cal-year-select').value = year;
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const grid = document.getElementById('cal-days-grid');
+      grid.innerHTML = '';
+
+      for (let i = 0; i < firstDay; i++) {
+        const blank = document.createElement('div');
+        grid.appendChild(blank);
+      }
+
+      const today = new Date();
+      for (let d = 1; d <= daysInMonth; d++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = d;
+        const isSelected = calSelectedDate &&
+          calSelectedDate.getFullYear() === year &&
+          calSelectedDate.getMonth() === month &&
+          calSelectedDate.getDate() === d;
+        const isToday = today.getFullYear() === year &&
+          today.getMonth() === month &&
+          today.getDate() === d;
+
+        btn.className = `py-1.5 rounded-lg font-semibold transition ${
+          isSelected
+            ? 'bg-sky-500 text-white shadow'
+            : isToday
+              ? 'border border-sky-400 text-sky-600 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-950'
+              : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+        }`;
+        btn.onclick = () => pickDate(year, month, d);
+        grid.appendChild(btn);
+      }
+    }
+
+    // =========================================================================
+    // 4. SECTION NAVIGATION & PROGRESS BAR
+    // =========================================================================
+    function goToSection(idx) {
+      state.currentSection = idx;
+
+      // Hide all sections
+      document.querySelectorAll('.section-panel').forEach(sec => sec.classList.add('hidden'));
+
+      if (idx === 8) {
+        document.getElementById('results-section').classList.remove('hidden');
+      } else {
+        document.getElementById(`section-${idx}`).classList.remove('hidden');
+      }
+
+      // Update active nav pills
+      document.querySelectorAll('.nav-pill').forEach(btn => {
+        const navIdx = parseInt(btn.getAttribute('data-nav'), 10);
+        if (navIdx === idx) {
+          btn.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+          btn.classList.remove('text-slate-600', 'dark:text-slate-300');
+        } else {
+          btn.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+          btn.classList.add('text-slate-600', 'dark:text-slate-300');
+        }
+      });
+
+      document.getElementById('section-indicator').textContent = sectionTitles[idx] || "";
+
+      // Start puzzle timer when entering Activity 5 if not checked
+      if (idx === 5 && !state.checked[5]) {
+        startPuzzleTimer();
+      } else {
+        stopPuzzleTimer();
+      }
+
+      // Always scroll to top of page when advancing or going back
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateProgressBar() {
+      const completedCount = Object.values(state.checked).filter(Boolean).length;
+      const pct = Math.round((completedCount / 7) * 100);
+      document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+      document.getElementById('progress-label').textContent =
+        `Progress: ${pct}% Completed (${completedCount} of 7 Activities Checked)`;
+    }
+
+    function markActivityChecked(actNum, scorePct) {
+      state.checked[actNum] = true;
+      state.scores[actNum] = scorePct;
+
+      const statusBadge = document.getElementById(`status-act${actNum}`);
+      if (statusBadge) {
+        statusBadge.textContent = `Checked • Score: ${scorePct}%`;
+        statusBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300";
+      }
+
+      const checkBtn = document.getElementById(`check-btn-${actNum}`);
+      if (checkBtn) {
+        checkBtn.disabled = true;
+        checkBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        checkBtn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i><span>Answers Locked</span>`;
+        lucide.createIcons();
+      }
+
+      updateProgressBar();
+    }
+
+    // =========================================================================
+    // 5. MEDIA FALLBACK HANDLERS (For Local Files Image1, Video1, Image2, Image3)
+    // =========================================================================
+    function createHistoricalSvgDataUri(title, subtitle, accentColor) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0f172a"/>
+            <stop offset="50%" stop-color="#1e293b"/>
+            <stop offset="100%" stop-color="${accentColor}"/>
+          </linearGradient>
+        </defs>
+        <rect width="900" height="500" fill="url(#bg)"/>
+        <rect x="30" y="30" width="840" height="440" rx="20" fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="10 6"/>
+        <text x="450" y="210" font-family="sans-serif" font-size="36" font-weight="bold" fill="#ffffff" text-anchor="middle">${title}</text>
+        <text x="450" y="260" font-family="sans-serif" font-size="20" fill="#cbd5e1" text-anchor="middle">${subtitle}</text>
+        <text x="450" y="310" font-family="sans-serif" font-size="16" fill="#7dd3fc" text-anchor="middle">Mr. Rocha’s English Class • Mexican Revolution (1910–1920)</text>
+      </svg>`;
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    }
+
+    function handleImageFallback(imgEl, name) {
+      // Try .png before showing embedded vector graphic
+      if (!imgEl.dataset.triedPng) {
+        imgEl.dataset.triedPng = "true";
+        imgEl.src = `${name}.png`;
+        return;
+      }
+      imgEl.onerror = null;
+      imgEl.src = createHistoricalSvgDataUri(
+        `${name} • The Mexican Revolution`,
+        `Place ${name}.jpg or ${name}.png in the same folder as this worksheet`,
+        "#065f46"
+      );
+    }
+
+    function handleVideoFallback(videoEl) {
+      videoEl.classList.add('hidden');
+      document.getElementById('video1-fallback').classList.remove('hidden');
+    }
+
+    // =========================================================================
+    // 6. ACTIVITY 1 & 2 CHECKING LOGIC (OPEN RESPONSE WITH RUBRIC SCORING)
+    // =========================================================================
+    function updateWordCount(textareaId, counterId) {
+      const text = document.getElementById(textareaId).value.trim();
+      const words = text ? text.split(/\s+/).length : 0;
+      document.getElementById(counterId).textContent = `${words} words`;
+    }
+
+    function evaluateOpenResponse(text, keywords) {
+      const clean = text.trim();
+      if (!clean) return { score: 0, words: 0, matched: [] };
+      const words = clean.split(/\s+/);
+      const lower = clean.toLowerCase();
+      const matched = keywords.filter(kw => lower.includes(kw));
+      // Score based on length (up to 60 pts) + historical/past-tense keyword usage (up to 40 pts)
+      const lengthScore = Math.min(60, Math.round((words.length / 25) * 60));
+      const keywordScore = Math.min(40, matched.length * 10);
+      return {
+        score: Math.min(100, lengthScore + keywordScore),
+        words: words.length,
+        matched
+      };
+    }
+
+    function checkActivity1() {
+      if (state.checked[1]) return;
+      const textarea = document.getElementById('act1-response');
+      textarea.readOnly = true;
+      textarea.classList.add('locked-input', 'bg-slate-100', 'dark:bg-slate-800');
+
+      const res = evaluateOpenResponse(textarea.value, [
+        "revolution", "mexico", "1910", "díaz", "diaz", "madero", "zapata", "villa",
+        "was", "were", "fought", "wanted", "land", "people", "government"
+      ]);
+
+      const fb = document.getElementById('feedback-act1');
+      fb.classList.remove('hidden');
+      if (res.words === 0) {
+        fb.className = "mt-4 p-4 rounded-xl border border-rose-300 bg-rose-50 dark:bg-rose-950/40 dark:border-rose-800 text-rose-800 dark:text-rose-200";
+        fb.innerHTML = `<strong>No response entered (0%).</strong> Your answer box is now locked. Remember to write a complete summary in future activities.`;
+      } else {
+        fb.className = "mt-4 p-4 rounded-xl border border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200";
+        fb.innerHTML = `<strong>Submitted &amp; Locked! Score: ${res.score}%</strong> (${res.words} words written).<br/>
+          <span class="text-sm">Mr. Rocha’s Feedback: ${res.words >= 20 ? "Great job explaining the video clearly using historical details!" : "Good start! Adding a few more descriptive sentences in Simple Past and Past Continuous will make your summary even stronger."}</span>`;
+      }
+
+      state.details[1] = res;
+      markActivityChecked(1, res.score);
+    }
+
+    function checkActivity2() {
+      if (state.checked[2]) return;
+      const textarea = document.getElementById('act2-response');
+      textarea.readOnly = true;
+      textarea.classList.add('locked-input', 'bg-slate-100', 'dark:bg-slate-800');
+
+      const res = evaluateOpenResponse(textarea.value, [
+        "elena", "mateo", "train", "chihuahua", "juárez", "juarez", "soldiers", "soldaderas",
+        "was", "were", "letters", "supplies", "villa", "1913", "revolution"
+      ]);
+
+      const fb = document.getElementById('feedback-act2');
+      fb.classList.remove('hidden');
+      if (res.words === 0) {
+        fb.className = "mt-4 p-4 rounded-xl border border-rose-300 bg-rose-50 dark:bg-rose-950/40 dark:border-rose-800 text-rose-800 dark:text-rose-200";
+        fb.innerHTML = `<strong>No response entered (0%).</strong> Your answer box is now locked.`;
+      } else {
+        fb.className = "mt-4 p-4 rounded-xl border border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200";
+        fb.innerHTML = `<strong>Submitted &amp; Locked! Score: ${res.score}%</strong> (${res.words} words written).<br/>
+          <span class="text-sm">Mr. Rocha’s Feedback: ${res.words >= 20 ? "Excellent summary of Elena and Mateo's journey on the midnight train!" : "Nice effort! Mentioning key characters like Elena, Mateo, and the soldaderas adds great detail."}</span>`;
+      }
+
+      state.details[2] = res;
+      markActivityChecked(2, res.score);
+    }
+
+    // =========================================================================
+    // 7. ACTIVITY 3: RENDER & CHECK GRAMMAR PRACTICE
+    // =========================================================================
+    function renderActivity3() {
+      const container = document.getElementById('act3-questions');
+      container.innerHTML = act3Data.map((q, idx) => `
+        <div id="card-${q.id}" class="p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Question ${idx + 1} • ${q.tag}</span>
+            <span id="badge-${q.id}" class="text-xs font-bold"></span>
+          </div>
+          <p class="font-medium text-slate-900 dark:text-slate-100 mb-3">${q.prompt}</p>
+          <select id="${q.id}" class="shiny-blue-box w-full sm:w-80 px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-medium text-sm">
+            <option value="">-- Select the correct verb form --</option>
+            ${q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+          </select>
+        </div>
+      `).join('');
+    }
+
+    function checkActivity3() {
+      if (state.checked[3]) return;
+      let correctCount = 0;
+
+      act3Data.forEach(q => {
+        const sel = document.getElementById(q.id);
+        const card = document.getElementById(`card-${q.id}`);
+        const badge = document.getElementById(`badge-${q.id}`);
+        sel.disabled = true;
+        sel.classList.add('locked-input');
+
+        if (sel.value === q.answer) {
+          correctCount++;
+          card.classList.add('border-emerald-400', 'bg-emerald-50/60', 'dark:bg-emerald-950/30');
+          badge.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400">✓ Correct</span>`;
+        } else {
+          card.classList.add('border-rose-400', 'bg-rose-50/60', 'dark:bg-rose-950/30');
+          badge.innerHTML = `<span class="text-rose-600 dark:text-rose-400">✗ Incorrect (Answer: ${q.answer})</span>`;
+        }
+      });
+
+      const pct = Math.round((correctCount / act3Data.length) * 100);
+      const fb = document.getElementById('feedback-act3');
+      fb.classList.remove('hidden');
+      fb.className = "mt-4 p-4 rounded-xl border border-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 dark:border-indigo-800 text-slate-900 dark:text-slate-100";
+      fb.innerHTML = `<strong>Activity 3 Checked &amp; Locked!</strong> You scored <strong>${correctCount} / ${act3Data.length} (${pct}%)</strong>.`;
+
+      state.details[3] = { correct: correctCount, total: act3Data.length };
+      markActivityChecked(3, pct);
+    }
+
+    // =========================================================================
+    // 8. ACTIVITY 4: LISTEN AND WRITE (8 AUDIOS)
+    // =========================================================================
+    function renderActivity4() {
+      const container = document.getElementById('act4-items');
+      container.innerHTML = act4Data.map(item => `
+        <div id="dict-card-${item.num}" class="p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="font-bold text-sm text-sky-700 dark:text-sky-400 flex items-center gap-2">
+              <i data-lucide="volume-2" class="w-4 h-4"></i> Audio ${item.num}
+            </span>
+            <span id="dict-badge-${item.num}" class="text-xs font-bold"></span>
+          </div>
+          <audio controls class="w-full h-10">
+            <source src="${item.audio}.mp3" type="audio/mpeg" />
+            <source src="${item.audio}.wav" type="audio/wav" />
+            <source src="${item.audio}.ogg" type="audio/ogg" />
+          </audio>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-slate-700 dark:text-slate-300">${item.num}.</span>
+            <input id="dict-input-${item.num}" type="text" placeholder="Type sentence ${item.num} here..."
+              class="shiny-blue-box w-full px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-base" />
+          </div>
+          <div id="dict-key-${item.num}" class="hidden text-sm font-medium"></div>
+        </div>
+      `).join('');
+    }
+
+    function normalizeDictation(str) {
+      return str
+        .trim()
+        .replace(/[’‘]/g, "'")
+        .replace(/\s+/g, " ")
+        .toLowerCase();
+    }
+
+    function checkActivity4() {
+      if (state.checked[4]) return;
+      let correctCount = 0;
+
+      act4Data.forEach(item => {
+        const input = document.getElementById(`dict-input-${item.num}`);
+        const card = document.getElementById(`dict-card-${item.num}`);
+        const badge = document.getElementById(`dict-badge-${item.num}`);
+        const keyEl = document.getElementById(`dict-key-${item.num}`);
+
+        input.readOnly = true;
+        input.classList.add('locked-input', 'bg-slate-100', 'dark:bg-slate-800');
+
+        const userNorm = normalizeDictation(input.value);
+        const keyNorm = normalizeDictation(item.answer);
+        // Accept exact match with or without trailing punctuation, while displaying official punctuation
+        const userNoPunct = userNorm.replace(/[.?!]+$/, "");
+        const keyNoPunct = keyNorm.replace(/[.?!]+$/, "");
+
+        const isCorrect = userNorm.length > 0 && (userNorm === keyNorm || userNoPunct === keyNoPunct);
+
+        keyEl.classList.remove('hidden');
+        if (isCorrect) {
+          correctCount++;
+          card.classList.add('border-emerald-400', 'bg-emerald-50/60', 'dark:bg-emerald-950/30');
+          badge.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400">✓ Correct</span>`;
+          keyEl.className = "text-sm font-medium text-emerald-700 dark:text-emerald-300";
+          keyEl.textContent = `Answer Key: ${item.answer}`;
+        } else {
+          card.classList.add('border-rose-400', 'bg-rose-50/60', 'dark:bg-rose-950/30');
+          badge.innerHTML = `<span class="text-rose-600 dark:text-rose-400">✗ Incorrect</span>`;
+          keyEl.className = "text-sm font-medium text-rose-700 dark:text-rose-300";
+          keyEl.textContent = `Correct Sentence: ${item.answer}`;
+        }
+      });
+
+      const pct = Math.round((correctCount / act4Data.length) * 100);
+      const fb = document.getElementById('feedback-act4');
+      fb.classList.remove('hidden');
+      fb.className = "mt-4 p-4 rounded-xl border border-sky-300 bg-sky-50 dark:bg-sky-950/40 dark:border-sky-800 text-slate-900 dark:text-slate-100";
+      fb.innerHTML = `<strong>Activity 4 Checked &amp; Locked!</strong> You got <strong>${correctCount} / ${act4Data.length} (${pct}%)</strong> sentences right.`;
+
+      state.details[4] = { correct: correctCount, total: act4Data.length };
+      markActivityChecked(4, pct);
+    }
+
+    // =========================================================================
+    // 9. ACTIVITY 5: 24-SQUARE DRAG & DROP PUZZLE (6x4 GRID)
+    // =========================================================================
+    function initPuzzle() {
+      const targetImg = document.getElementById('target-img3');
+      // Fallback handler for Image3 so puzzle tiles always render cleanly even before local file is added
+      targetImg.onerror = function () {
+        if (!targetImg.dataset.triedPng) {
+          targetImg.dataset.triedPng = "true";
+          targetImg.src = "Image3.png";
+          state.img3ResolvedUrl = "Image3.png";
+          renderPuzzleBoard();
+          return;
+        }
+        targetImg.onerror = null;
+        const fallbackUri = createHistoricalSvgDataUri(
+          "Image3 • Mexican Revolution Heroes",
+          "Place Image3.jpg or Image3.png in the same folder",
+          "#991b1b"
+        );
+        targetImg.src = fallbackUri;
+        state.img3ResolvedUrl = fallbackUri;
+        renderPuzzleBoard();
+      };
+      targetImg.onload = function () {
+        state.img3ResolvedUrl = targetImg.src;
+        renderPuzzleBoard();
+      };
+
+      resetPuzzle(false);
+    }
+
+    function startPuzzleTimer() {
+      if (state.puzzleInterval || state.checked[5]) return;
+      state.puzzleInterval = setInterval(() => {
+        state.puzzleSeconds++;
+        const mins = String(Math.floor(state.puzzleSeconds / 60)).padStart(2, '0');
+        const secs = String(state.puzzleSeconds % 60).padStart(2, '0');
+        document.getElementById('puzzle-timer').textContent = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopPuzzleTimer() {
+      if (state.puzzleInterval) {
+        clearInterval(state.puzzleInterval);
+        state.puzzleInterval = null;
+      }
+    }
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function resetPuzzle(restartTimer = true) {
+      if (state.checked[5]) return;
+      const ordered = Array.from({ length: 24 }, (_, i) => i);
+      do {
+        state.puzzleOrder = shuffleArray(ordered);
+      } while (state.puzzleOrder.every((val, idx) => val === idx));
+
+      state.selectedTileIndex = null;
+      state.puzzleSeconds = 0;
+      document.getElementById('puzzle-timer').textContent = "00:00";
+      renderPuzzleBoard();
+
+      if (restartTimer && state.currentSection === 5) {
+        stopPuzzleTimer();
+        startPuzzleTimer();
+      }
+    }
+
+    function swapPuzzleTiles(idxA, idxB) {
+      if (state.checked[5] || idxA === idxB) return;
+      const temp = state.puzzleOrder[idxA];
+      state.puzzleOrder[idxA] = state.puzzleOrder[idxB];
+      state.puzzleOrder[idxB] = temp;
+      state.selectedTileIndex = null;
+      renderPuzzleBoard();
+    }
+
+    function renderPuzzleBoard() {
+      const board = document.getElementById('puzzle-board');
+      board.innerHTML = '';
+      let correctCount = 0;
+
+      state.puzzleOrder.forEach((pieceId, slotIdx) => {
+        if (pieceId === slotIdx) correctCount++;
+
+        const cols = 6;
+        const rows = 4;
+        const origCol = pieceId % cols;
+        const origRow = Math.floor(pieceId / cols);
+
+        const posX = (origCol / (cols - 1)) * 100;
+        const posY = (origRow / (rows - 1)) * 100;
+
+        const tile = document.createElement('div');
+        tile.className = 'puzzle-tile border border-slate-700/70';
+        if (state.selectedTileIndex === slotIdx) {
+          tile.classList.add('selected-tile');
+        }
+        if (pieceId === slotIdx) {
+          tile.classList.add('ring-1', 'ring-emerald-400/70');
+        }
+
+        tile.style.backgroundImage = `url("${state.img3ResolvedUrl}")`;
+        tile.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+        tile.style.backgroundPosition = `${posX}% ${posY}%`;
+        tile.draggable = !state.checked[5];
+        tile.dataset.slot = slotIdx;
+
+        if (!state.checked[5]) {
+          // Desktop Drag & Drop
+          tile.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', String(slotIdx));
+          });
+          tile.addEventListener('dragover', (e) => {
+            e.preventDefault();
+          });
+          tile.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const fromSlot = parseInt(e.dataTransfer.getData('text/plain'), 10);
+            if (!isNaN(fromSlot)) {
+              swapPuzzleTiles(fromSlot, slotIdx);
+            }
+          });
+
+          // Tap / Click Swap (Mobile, Tablet, & Accessibility Friendly)
+          tile.addEventListener('click', () => {
+            if (state.selectedTileIndex === null) {
+              state.selectedTileIndex = slotIdx;
+              renderPuzzleBoard();
+            } else if (state.selectedTileIndex === slotIdx) {
+              state.selectedTileIndex = null;
+              renderPuzzleBoard();
+            } else {
+              swapPuzzleTiles(state.selectedTileIndex, slotIdx);
+            }
+          });
+        } else {
+          tile.style.cursor = 'not-allowed';
+        }
+
+        board.appendChild(tile);
+      });
+
+      document.getElementById('puzzle-correct-count').textContent = correctCount;
+    }
+
+    function checkActivity5() {
+      if (state.checked[5]) return;
+      stopPuzzleTimer();
+
+      let correctCount = 0;
+      state.puzzleOrder.forEach((pieceId, slotIdx) => {
+        if (pieceId === slotIdx) correctCount++;
+      });
+
+      const pct = Math.round((correctCount / 24) * 100);
+      const resetBtn = document.getElementById('puzzle-reset-btn');
+      resetBtn.disabled = true;
+      resetBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+      const fb = document.getElementById('feedback-act5');
+      fb.classList.remove('hidden');
+      fb.className = "mt-4 p-4 rounded-xl border border-amber-300 bg-amber-50 dark:bg-amber-950/40 dark:border-amber-800 text-slate-900 dark:text-slate-100";
+      fb.innerHTML = `<strong>Puzzle Checked &amp; Locked!</strong> You placed <strong>${correctCount} / 24 (${pct}%)</strong> squares in their exact positions in <strong>${document.getElementById('puzzle-timer').textContent}</strong>.`;
+
+      state.details[5] = { correct: correctCount, total: 24, time: document.getElementById('puzzle-timer').textContent };
+      markActivityChecked(5, pct);
+      renderPuzzleBoard();
+    }
+
+    // =========================================================================
+    // 10. ACTIVITY 6: READING & LISTENING MULTIPLE CHOICE
+    // =========================================================================
+    function renderActivity6() {
+      const container = document.getElementById('act6-questions');
+      container.innerHTML = act6Data.map(q => `
+        <div id="mc-card-${q.num}" class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h4 class="font-bold text-base text-slate-900 dark:text-white">${q.num}. ${q.question}</h4>
+            <span id="mc-badge-${q.num}" class="text-xs font-bold"></span>
+          </div>
+          <div class="space-y-2.5">
+            ${q.options.map(opt => `
+              <label id="mc-opt-${q.num}-${opt.letter}" class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-sky-400 cursor-pointer transition">
+                <input type="radio" name="act6_q${q.num}" value="${opt.letter}" class="mt-1 w-4 h-4 text-sky-600 focus:ring-sky-500" />
+                <span class="text-sm sm:text-base text-slate-800 dark:text-slate-200">
+                  <strong>${opt.letter}.</strong> ${opt.text}
+                </span>
+              </label>
+            `).join('')}
+          </div>
+          <div id="mc-exp-${q.num}" class="hidden mt-3 text-sm font-medium"></div>
+        </div>
+      `).join('');
+    }
+
+    function checkActivity6() {
+      if (state.checked[6]) return;
+      let correctCount = 0;
+
+      act6Data.forEach(q => {
+        const radios = document.querySelectorAll(`input[name="act6_q${q.num}"]`);
+        let selectedVal = null;
+        radios.forEach(r => {
+          if (r.checked) selectedVal = r.value;
+          r.disabled = true;
+        });
+
+        const card = document.getElementById(`mc-card-${q.num}`);
+        const badge = document.getElementById(`mc-badge-${q.num}`);
+        const exp = document.getElementById(`mc-exp-${q.num}`);
+        exp.classList.remove('hidden');
+
+        // Highlight correct option
+        const correctLabel = document.getElementById(`mc-opt-${q.num}-${q.correct}`);
+        if (correctLabel) {
+          correctLabel.classList.add('border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/50');
+        }
+
+        if (selectedVal === q.correct) {
+          correctCount++;
+          card.classList.add('border-emerald-400');
+          badge.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400">✓ Correct</span>`;
+          exp.className = "mt-3 text-sm font-medium text-emerald-700 dark:text-emerald-300";
+          exp.textContent = `✓ Correct! ${q.explanation}`;
+        } else {
+          if (selectedVal) {
+            const wrongLabel = document.getElementById(`mc-opt-${q.num}-${selectedVal}`);
+            if (wrongLabel) wrongLabel.classList.add('border-rose-500', 'bg-rose-50', 'dark:bg-rose-950/50');
+          }
+          card.classList.add('border-rose-400');
+          badge.innerHTML = `<span class="text-rose-600 dark:text-rose-400">✗ Incorrect</span>`;
+          exp.className = "mt-3 text-sm font-medium text-rose-700 dark:text-rose-300";
+          exp.textContent = `Correct Answer: ${q.correct}. ${q.explanation}`;
+        }
+      });
+
+      const pct = Math.round((correctCount / act6Data.length) * 100);
+      const fb = document.getElementById('feedback-act6');
+      fb.classList.remove('hidden');
+      fb.className = "mt-4 p-4 rounded-xl border border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-800 text-slate-900 dark:text-slate-100";
+      fb.innerHTML = `<strong>Activity 6 Checked &amp; Locked!</strong> You answered <strong>${correctCount} / ${act6Data.length} (${pct}%)</strong> questions correctly.`;
+
+      state.details[6] = { correct: correctCount, total: act6Data.length };
+      markActivityChecked(6, pct);
+    }
+
+    // =========================================================================
+    // 11. ACTIVITY 7: SHUFFLED COMPLEX SENTENCES DRAG & DROP + TTS AUDIO
+    // =========================================================================
+    const sortableInstances = [];
+
+    function speakSentence(sentenceText) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(sentenceText);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.92;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert("Text-to-speech audio is not supported in this browser.");
+      }
+    }
+
+    function renderActivity7() {
+      const container = document.getElementById('act7-items');
+      container.innerHTML = act7Data.map(item => {
+        const words = item.sentence.split(' ');
+        let shuffled = shuffleArray(words);
+        while (shuffled.join(' ') === item.sentence && words.length > 1) {
+          shuffled = shuffleArray(words);
+        }
+
+        return `
+          <div id="sent-card-${item.id}" class="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
+                  Sentence ${item.id} • ${item.type}
+                </span>
+                <button type="button" onclick="speakSentence(${JSON.stringify(item.sentence)})"
+                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-sm transition">
+                  <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                  <span>Listen to Sentence</span>
+                </button>
+              </div>
+              <span id="sent-badge-${item.id}" class="text-xs font-bold"></span>
+            </div>
+
+            <!-- Drop Target Box (Shiny Blue Border) -->
+            <div>
+              <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Drop words here in order:</div>
+              <div id="drop-zone-${item.id}" data-sent-id="${item.id}"
+                class="shiny-blue-box min-h-[54px] p-2.5 rounded-xl bg-white dark:bg-slate-900 flex flex-wrap gap-2 items-center">
+              </div>
+            </div>
+
+            <!-- Word Bank -->
+            <div>
+              <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Shuffled Words (Drag or tap to move):</div>
+              <div id="word-bank-${item.id}" data-sent-id="${item.id}"
+                class="min-h-[48px] p-2.5 rounded-xl bg-slate-200/70 dark:bg-slate-800/80 flex flex-wrap gap-2 items-center">
+                ${shuffled.map(w => `
+                  <span onclick="toggleWordChip(this, ${item.id})"
+                    class="word-chip px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-sm">
+                    ${w}
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+
+            <div id="sent-key-${item.id}" class="hidden text-sm font-medium"></div>
+          </div>
+        `;
+      }).join('');
+
+      // Initialize SortableJS on each pair of Word Bank <-> Drop Zone
+      act7Data.forEach(item => {
+        const bankEl = document.getElementById(`word-bank-${item.id}`);
+        const dropEl = document.getElementById(`drop-zone-${item.id}`);
+        const groupName = `sent-group-${item.id}`;
+
+        const s1 = new Sortable(bankEl, { group: groupName, animation: 150 });
+        const s2 = new Sortable(dropEl, { group: groupName, animation: 150 });
+        sortableInstances.push(s1, s2);
+      });
+    }
+
+    // Allows click/tap movement between bank and drop zone in addition to drag-and-drop
+    function toggleWordChip(chipEl, sentId) {
+      if (state.checked[7]) return;
+      const bankEl = document.getElementById(`word-bank-${sentId}`);
+      const dropEl = document.getElementById(`drop-zone-${sentId}`);
+      if (chipEl.parentElement === bankEl) {
+        dropEl.appendChild(chipEl);
+      } else {
+        bankEl.appendChild(chipEl);
+      }
+    }
+
+    function checkActivity7() {
+      if (state.checked[7]) return;
+      let correctCount = 0;
+
+      // Lock all Sortable instances
+      sortableInstances.forEach(inst => inst.option('disabled', true));
+
+      act7Data.forEach(item => {
+        const dropEl = document.getElementById(`drop-zone-${item.id}`);
+        const card = document.getElementById(`sent-card-${item.id}`);
+        const badge = document.getElementById(`sent-badge-${item.id}`);
+        const keyEl = document.getElementById(`sent-key-${item.id}`);
+
+        const chips = Array.from(dropEl.querySelectorAll('.word-chip'));
+        chips.forEach(c => c.classList.add('locked-input'));
+        const userSentence = chips.map(c => c.textContent.trim()).join(' ');
+
+        keyEl.classList.remove('hidden');
+        if (userSentence === item.sentence) {
+          correctCount++;
+          card.classList.add('border-emerald-400', 'bg-emerald-50/60', 'dark:bg-emerald-950/30');
+          badge.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400">✓ Correct</span>`;
+          keyEl.className = "text-sm font-medium text-emerald-700 dark:text-emerald-300";
+          keyEl.textContent = `✓ Well done! "${item.sentence}"`;
+        } else {
+          card.classList.add('border-rose-400', 'bg-rose-50/60', 'dark:bg-rose-950/30');
+          badge.innerHTML = `<span class="text-rose-600 dark:text-rose-400">✗ Incorrect</span>`;
+          keyEl.className = "text-sm font-medium text-rose-700 dark:text-rose-300";
+          keyEl.textContent = `Correct Order: ${item.sentence}`;
+        }
+      });
+
+      const pct = Math.round((correctCount / act7Data.length) * 100);
+      const fb = document.getElementById('feedback-act7');
+      fb.classList.remove('hidden');
+      fb.className = "mt-4 p-4 rounded-xl border border-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 dark:border-indigo-800 text-slate-900 dark:text-slate-100";
+      fb.innerHTML = `<strong>Activity 7 Checked &amp; Locked!</strong> You built <strong>${correctCount} / ${act7Data.length} (${pct}%)</strong> complex sentences accurately.`;
+
+      state.details[7] = { correct: correctCount, total: act7Data.length };
+      markActivityChecked(7, pct);
+    }
+
+    // =========================================================================
+    // 12. SUBMIT WORKSHEET, ANALYTICS, CHARTS, & 8 RECOMMENDATIONS
+    // =========================================================================
+    function evaluateUncheckedIfNeeded(actNum) {
+      // Allows user to submit and check results even if they haven't completed/checked all activities
+      if (state.checked[actNum]) return state.scores[actNum];
+
+      if (actNum === 1) {
+        const res = evaluateOpenResponse(document.getElementById('act1-response').value, [
+          "revolution", "mexico", "1910", "díaz", "diaz", "madero", "zapata", "villa", "was", "were"
+        ]);
+        return res.score;
+      }
+      if (actNum === 2) {
+        const res = evaluateOpenResponse(document.getElementById('act2-response').value, [
+          "elena", "mateo", "train", "chihuahua", "juárez", "juarez", "soldiers", "soldaderas", "was", "were"
+        ]);
+        return res.score;
+      }
+      if (actNum === 3) {
+        let c = 0;
+        act3Data.forEach(q => {
+          const el = document.getElementById(q.id);
+          if (el && el.value === q.answer) c++;
+        });
+        return Math.round((c / act3Data.length) * 100);
+      }
+      if (actNum === 4) {
+        let c = 0;
+        act4Data.forEach(item => {
+          const el = document.getElementById(`dict-input-${item.num}`);
+          if (el) {
+            const u = normalizeDictation(el.value).replace(/[.?!]+$/, "");
+            const k = normalizeDictation(item.answer).replace(/[.?!]+$/, "");
+            if (u && u === k) c++;
+          }
+        });
+        return Math.round((c / act4Data.length) * 100);
+      }
+      if (actNum === 5) {
+        let c = 0;
+        state.puzzleOrder.forEach((p, idx) => { if (p === idx) c++; });
+        return Math.round((c / 24) * 100);
+      }
+      if (actNum === 6) {
+        let c = 0;
+        act6Data.forEach(q => {
+          const checkedRadio = document.querySelector(`input[name="act6_q${q.num}"]:checked`);
+          if (checkedRadio && checkedRadio.value === q.correct) c++;
+        });
+        return Math.round((c / act6Data.length) * 100);
+      }
+      if (actNum === 7) {
+        let c = 0;
+        act7Data.forEach(item => {
+          const dropEl = document.getElementById(`drop-zone-${item.id}`);
+          if (dropEl) {
+            const sent = Array.from(dropEl.querySelectorAll('.word-chip')).map(ch => ch.textContent.trim()).join(' ');
+            if (sent === item.sentence) c++;
+          }
+        });
+        return Math.round((c / act7Data.length) * 100);
+      }
+      return 0;
+    }
+
+    function submitWorksheet() {
+      const studentName = document.getElementById('student-name').value.trim() || "Guest Student";
+      const studentDate = document.getElementById('student-date-value').value || new Date().toLocaleDateString('en-US', {
+        weekday: 'short', year: 'numeric', month: 'long', day: 'numeric'
+      });
+
+      document.getElementById('report-student-name').textContent = studentName;
+      document.getElementById('report-student-date').textContent = studentDate;
+
+      const finalScores = [1, 2, 3, 4, 5, 6, 7].map(n => evaluateUncheckedIfNeeded(n));
+      const overallPct = Math.round(finalScores.reduce((a, b) => a + b, 0) / 7);
+
+      document.getElementById('overall-percentage').textContent = `${overallPct}%`;
+      document.getElementById('overall-points-label').textContent = `Average Across 7 Activities (${overallPct} / 100)`;
+
+      const gradeTitle = document.getElementById('overall-grade-title');
+      const feedbackText = document.getElementById('overall-feedback-text');
+
+      if (overallPct >= 90) {
+        gradeTitle.textContent = "Outstanding Mastery! (A+)";
+        feedbackText.textContent = `Superb work, ${studentName}! You demonstrated command of both Simple Past and Past Continuous structures while accurately analyzing the key leaders, events, and 1917 Constitution of the Mexican Revolution.`;
+      } else if (overallPct >= 75) {
+        gradeTitle.textContent = "Strong Performance! (B+)";
+        feedbackText.textContent = `Great job, ${studentName}! You understand the core historical events of the Mexican Revolution and past verb tenses well. Review the specific recommendations below to polish any missed details.`;
+      } else if (overallPct >= 50) {
+        gradeTitle.textContent = "Developing Progress! (C)";
+        feedbackText.textContent = `Good effort, ${studentName}! You completed key parts of the worksheet, though several grammar, listening, or puzzle sections still need practice or completion. Use the 8 targeted recommendations below to level up.`;
+      } else {
+        gradeTitle.textContent = "Keep Practicing! (Needs Review)";
+        feedbackText.textContent = `Thank you for submitting, ${studentName}. Remember you can complete and check all 7 activities before submitting. Follow the 8 personalized steps below to build confidence in Simple Past, Past Continuous, and Mexican Revolution history.`;
+      }
+
+      // Render Colorful Activity Progress Bars
+      const activityMeta = [
+        { name: "Activity 1: Video Summary", score: finalScores[0], color: "from-pink-500 to-rose-500", badge: "bg-pink-100 text-pink-800 dark:bg-pink-950 dark:text-pink-300" },
+        { name: "Activity 2: Story Summary", score: finalScores[1], color: "from-orange-500 to-amber-500", badge: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300" },
+        { name: "Activity 3: Grammar Practice", score: finalScores[2], color: "from-emerald-500 to-teal-500", badge: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" },
+        { name: "Activity 4: Audio Dictation", score: finalScores[3], color: "from-sky-500 to-blue-600", badge: "bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300" },
+        { name: "Activity 5: 24-Square Puzzle", score: finalScores[4], color: "from-violet-500 to-purple-600", badge: "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300" },
+        { name: "Activity 6: Reading Comprehension", score: finalScores[5], color: "from-fuchsia-500 to-pink-600", badge: "bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-950 dark:text-fuchsia-300" },
+        { name: "Activity 7: Complex Sentence Builder", score: finalScores[6], color: "from-cyan-500 to-indigo-600", badge: "bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-300" }
+      ];
+
+      document.getElementById('activity-bars-container').innerHTML = activityMeta.map((act, i) => `
+        <div>
+          <div class="flex justify-between items-center text-sm font-bold mb-1">
+            <span class="text-slate-800 dark:text-slate-200">${act.name} ${state.checked[i + 1] ? '' : '<span class="text-xs font-normal text-amber-600 dark:text-amber-400">(Unchecked)</span>'}</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs ${act.badge}">${act.score}%</span>
+          </div>
+          <div class="w-full h-3.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div class="h-full rounded-full bg-gradient-to-r ${act.color}" style="width: ${act.score}%;"></div>
+          </div>
+        </div>
+      `).join('');
+
+      // Generate 8 Specific Recommendations Based on User Answers & Results
+      generateEightRecommendations(finalScores, studentName);
+
+      // Show results view & render colorful charts
+      goToSection(8);
+      setTimeout(() => renderCharts(finalScores), 60);
+    }
+
+    function generateEightRecommendations(scores, studentName) {
+      const recs = [
+        {
+          title: "1. Video Retelling & Narrative Fluency (Activity 1)",
+          icon: "video",
+          color: "border-pink-400 bg-pink-50/70 dark:bg-pink-950/30",
+          text: scores[0] < 75
+            ? `Rewatch Video1 and write at least 4 complete sentences describing who was fighting and what changed in 1910 using 'was/were + -ing' for background scenes.`
+            : `Your video summary scored ${scores[0]}%! Challenge yourself to connect two ideas with 'while' and 'when' in your next video reflection.`
+        },
+        {
+          title: "2. Story Comprehension & Character Analysis (Activity 2)",
+          icon: "book-open",
+          color: "border-amber-400 bg-amber-50/70 dark:bg-amber-950/30",
+          text: scores[1] < 75
+            ? `Review 'Midnight Train to Chihuahua' and highlight how Elena and the soldaderas supported the troops while Mateo inspected the train.`
+            : `Excellent work (${scores[1]}%) summarizing Elena and Mateo's story! Practice quoting specific historical details to support your main idea.`
+        },
+        {
+          title: "3. Simple Past vs. Past Continuous Contrast (Activity 3)",
+          icon: "git-branch",
+          color: "border-emerald-400 bg-emerald-50/70 dark:bg-emerald-950/30",
+          text: scores[2] < 80
+            ? `Focus on interrupted actions in Activity 3 (${scores[2]}%): use Past Continuous (was/were + verb-ing) for the longer background action and Simple Past for the sudden event.`
+            : `Strong grammar accuracy (${scores[2]}%)! Keep reviewing irregular Simple Past verbs like 'wrote', 'fought', 'left', and 'began'.`
+        },
+        {
+          title: "4. Negative & Interrogative Auxiliary Control (Activities 3 & 4)",
+          icon: "help-circle",
+          color: "border-sky-400 bg-sky-50/70 dark:bg-sky-950/30",
+          text: (scores[2] < 80 || scores[3] < 80)
+            ? `Remember: after 'did' or 'did not' (e.g., 'Did Pancho Villa capture...'), always use the base form of the main verb without '-ed'.`
+            : `You mastered negative and question word order! Notice how 'Were the rebels travelling...' places 'Were' before the subject.`
+        },
+        {
+          title: "5. Active Listening & Punctuation Precision (Activity 4)",
+          icon: "headphones",
+          color: "border-blue-400 bg-blue-50/70 dark:bg-blue-950/30",
+          text: scores[3] < 80
+            ? `Replay Audio1–Audio8 twice: first for overall meaning, and second to check apostrophes ('Zapata’s'), proper nouns ('Querétaro', 'Ciudad Juárez'), and question marks.`
+            : `Impressive listening score (${scores[3]}%)! Your spelling of historical names and verb endings in dictation is sharp.`
+        },
+        {
+          title: "6. Visual-Spatial Observation & Historical Context (Activity 5)",
+          icon: "grid",
+          color: "border-purple-400 bg-purple-50/70 dark:bg-purple-950/30",
+          text: scores[4] < 100
+            ? `Complete all 24 squares of Image3 (${scores[4]}% matched) by matching border edges and uniforms first against the target image.`
+            : `100% puzzle completion! Describe three historical details you see in Image3 using Past Continuous sentences.`
+        },
+        {
+          title: "7. Historical Timeline & Cause-Effect Reading (Activity 6)",
+          icon: "landmark",
+          color: "border-fuchsia-400 bg-fuchsia-50/70 dark:bg-fuchsia-950/30",
+          text: scores[5] < 85
+            ? `Review the key sequence from Activity 6 (${scores[5]}%): Revolution begins (Nov 1910) → Díaz leaves & Madero becomes president (1911) → New Constitution grants rights (1917).`
+            : `Great reading comprehension (${scores[5]}%)! You accurately distinguished Zapata's campaign in the south from Villa's campaign in the north.`
+        },
+        {
+          title: "8. Complex Clause Word Order & Spoken Fluency (Activity 7)",
+          icon: "layers",
+          color: "border-cyan-400 bg-cyan-50/70 dark:bg-cyan-950/30",
+          text: scores[6] < 80
+            ? `Use the 'Listen to Sentence' audio buttons in Activity 7 (${scores[6]}%) to hear the natural rhythm of 'while' and 'when' clauses before arranging the tiles.`
+            : `Superb syntax (${scores[6]}%)! Read all 10 complex sentences aloud to reinforce pronunciation and clause intonation.`
+        }
+      ];
+
+      document.getElementById('recommendations-grid').innerHTML = recs.map(r => `
+        <div class="p-4 rounded-xl border-l-4 ${r.color} shadow-sm">
+          <h4 class="font-bold text-sm text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+            <i data-lucide="${r.icon}" class="w-4 h-4 text-indigo-600 dark:text-sky-400 shrink-0"></i>
+            <span>${r.title}</span>
+          </h4>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">${r.text}</p>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function renderCharts(scoresArg) {
+      const scores = scoresArg || [1, 2, 3, 4, 5, 6, 7].map(n => evaluateUncheckedIfNeeded(n));
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#e2e8f0' : '#1e293b';
+      const gridColor = isDark ? 'rgba(148, 163, 184, 0.18)' : 'rgba(100, 116, 139, 0.18)';
+
+      const labels = ['Act 1: Video', 'Act 2: Story', 'Act 3: Grammar', 'Act 4: Audio', 'Act 5: Puzzle', 'Act 6: Reading', 'Act 7: Builder'];
+      const palette = [
+        '#ec4899', // Pink
+        '#f59e0b', // Amber
+        '#10b981', // Emerald
+        '#3b82f6', // Blue
+        '#8b5cf6', // Violet
+        '#d946ef', // Fuchsia
+        '#06b6d4'  // Cyan
+      ];
+
+      if (state.charts.bar) state.charts.bar.destroy();
+      if (state.charts.doughnut) state.charts.doughnut.destroy();
+
+      const barCtx = document.getElementById('barChartCanvas').getContext('2d');
+      state.charts.bar = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Score (%)',
+            data: scores,
+            backgroundColor: palette,
+            borderRadius: 8,
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: { color: textColor, font: { weight: 'bold' } },
+              grid: { color: gridColor }
+            },
+            x: {
+              ticks: { color: textColor, font: { size: 11, weight: 'bold' } },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+
+      const doughnutCtx = document.getElementById('doughnutChartCanvas').getContext('2d');
+      const displayScores = scores.every(s => s === 0) ? [1, 1, 1, 1, 1, 1, 1] : scores;
+      state.charts.doughnut = new Chart(doughnutCtx, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            data: displayScores,
+            backgroundColor: palette,
+            borderWidth: 2,
+            borderColor: isDark ? '#0f172a' : '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: { color: textColor, font: { size: 11, weight: '600' }, boxWidth: 14 }
+            }
+          }
+        }
+      });
+    }
+
+    function printResults() {
+      window.scrollTo(0, 0);
+      setTimeout(() => window.print(), 100);
+    }
+
+    // =========================================================================
+    // 13. INITIALIZE WORKSHEET ON LOAD
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      initCalendar();
+      renderActivity3();
+      renderActivity4();
+      initPuzzle();
+      renderActivity6();
+      renderActivity7();
+      updateProgressBar();
+      goToSection(0);
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
